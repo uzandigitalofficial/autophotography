@@ -1,58 +1,53 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
 const DEMO_PROMPTS = [
-  "BMW M4 Competition rainy night Tokyo street",
-  "Ferrari 488 Pista desert golden hour hero shot",
-  "Porsche 911 GT3 RS tunnel motion blur",
-  "Lamborghini HuracÃ¡n coastal sunset showcase",
-  "Mercedes AMG G63 offroad documentary mud",
+  "BMW M4 Competition wet Tokyo street at night, neon reflections",
+  "Lamborghini Huracán desert dunes at sunset, golden hour",
+  "Porsche 911 GT3 RS studio white background, perfect lighting",
+  "Range Rover Sport muddy mountain trail, overcast sky",
+  "Ferrari SF90 underground tunnel motion blur, red speed",
 ];
 
 export function HeroPromptDemo() {
-  const [current, setCurrent] = useState(0);
-  const [displayed, setDisplayed] = useState("");
-  const [typing, setTyping] = useState(true);
+  const router = useRouter();
+  const [prompt, setPrompt] = useState("");
+  const [placeholder, setPlaceholder] = useState(DEMO_PROMPTS[0]);
 
-  useEffect(() => {
-    const target = DEMO_PROMPTS[current];
-    if (typing) {
-      if (displayed.length < target.length) {
-        const t = setTimeout(() => setDisplayed(target.slice(0, displayed.length + 1)), 40);
-        return () => clearTimeout(t);
-      } else {
-        const t = setTimeout(() => setTyping(false), 2200);
-        return () => clearTimeout(t);
-      }
-    } else {
-      if (displayed.length > 0) {
-        const t = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 18);
-        return () => clearTimeout(t);
-      } else {
-        setCurrent((c) => (c + 1) % DEMO_PROMPTS.length);
-        setTyping(true);
-      }
-    }
-  }, [displayed, typing, current]);
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    router.push("/sign-up");
+  }
+
+  function handleFocus() {
+    const random = DEMO_PROMPTS[Math.floor(Math.random() * DEMO_PROMPTS.length)];
+    setPlaceholder(random);
+  }
 
   return (
-    <div className="relative max-w-2xl mx-auto mb-8">
-      <div className="flex gap-2 rounded-2xl border border-zinc-700 bg-zinc-900/80 p-2 backdrop-blur-sm shadow-2xl">
-        <div className="flex-1 px-4 py-3 text-sm text-zinc-300 min-h-[44px] flex items-center">
-          <span>{displayed}</span>
-          <span className="ml-0.5 inline-block w-0.5 h-4 bg-indigo-400 animate-pulse" />
-        </div>
-        <Link
-          href="/sign-up"
-          className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors whitespace-nowrap"
+    <form onSubmit={handleSubmit} className="mx-auto max-w-2xl mb-12">
+      <div className="flex flex-col sm:flex-row gap-3">
+        <input
+          type="text"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          onFocus={handleFocus}
+          placeholder={placeholder}
+          className="flex-1 rounded-xl border border-zinc-700 bg-zinc-900 px-5 py-4 text-white placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all"
+        />
+        <button
+          type="submit"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-4 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors whitespace-nowrap shadow-lg shadow-indigo-500/20"
         >
-          Try free <ChevronRight className="h-4 w-4" />
-        </Link>
+          Generate free <ChevronRight className="h-4 w-4" />
+        </button>
       </div>
-      <p className="mt-2 text-xs text-zinc-600 text-center">3 free credits on signup â€” no card required</p>
-    </div>
+      <p className="mt-3 text-xs text-zinc-600 text-center">
+        3 free credits on signup · No credit card required
+      </p>
+    </form>
   );
 }

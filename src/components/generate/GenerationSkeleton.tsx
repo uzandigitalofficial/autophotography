@@ -1,60 +1,58 @@
+"use client";
+
+import { Loader2, Brain, Camera, Sparkles } from "lucide-react";
+
 export function GenerationSkeleton() {
   return (
-    <div className="space-y-3 animate-pulse">
-      <div className="aspect-video w-full rounded-xl bg-zinc-900 border border-zinc-800" />
-      <div className="h-3 w-3/4 rounded bg-zinc-800" />
-      <div className="flex gap-2">
-        <div className="h-10 flex-1 rounded-lg bg-zinc-900" />
-        <div className="h-10 w-12 rounded-lg bg-zinc-900" />
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 overflow-hidden animate-pulse">
+      <div className="aspect-video bg-zinc-800 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 text-zinc-600 animate-spin" />
+      </div>
+      <div className="p-5 space-y-3">
+        <div className="h-3 bg-zinc-800 rounded w-3/4" />
+        <div className="h-3 bg-zinc-800 rounded w-1/2" />
       </div>
     </div>
   );
 }
 
-export function PromptEngineStatus({ step }: { step: "prompt" | "generating" | "uploading" }) {
-  const steps = [
-    { id: "prompt", label: "Building cinematic brief", icon: "🧠" },
-    { id: "generating", label: "Rendering with FLUX.1", icon: "🎨" },
-    { id: "uploading", label: "Saving to CDN", icon: "☁️" },
+interface PromptEngineStatusProps {
+  stage: "prompt" | "generating" | "uploading";
+}
+
+export function PromptEngineStatus({ stage }: PromptEngineStatusProps) {
+  const stages = [
+    { id: "prompt", icon: Brain, label: "Engineering your prompt", desc: "Car Visual Director AI is structuring your brief" },
+    { id: "generating", icon: Camera, label: "Generating image", desc: "FLUX.1 is rendering your cinematic shot" },
+    { id: "uploading", icon: Sparkles, label: "Finalising", desc: "Saving to your gallery" },
   ];
 
-  return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 space-y-3">
-      {steps.map((s) => {
-        const isActive = s.id === step;
-        const isDone =
-          (step === "generating" && s.id === "prompt") ||
-          (step === "uploading" && s.id !== "uploading");
+  const currentIndex = stages.findIndex((s) => s.id === stage);
 
-        return (
-          <div key={s.id} className="flex items-center gap-3">
-            <span className="text-base">{s.icon}</span>
-            <span
-              className={
-                isDone
-                  ? "text-sm text-zinc-500 line-through"
-                  : isActive
-                  ? "text-sm text-white font-medium"
-                  : "text-sm text-zinc-600"
-              }
-            >
-              {s.label}
-            </span>
-            {isActive && (
-              <div className="ml-auto flex gap-0.5">
-                {[0, 1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-bounce"
-                    style={{ animationDelay: `${i * 0.15}s` }}
-                  />
-                ))}
+  return (
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+      <div className="space-y-4">
+        {stages.map((s, i) => {
+          const Icon = s.icon;
+          const isActive = i === currentIndex;
+          const isDone = i < currentIndex;
+          return (
+            <div key={s.id} className={`flex items-start gap-4 transition-all ${isActive ? "opacity-100" : isDone ? "opacity-40" : "opacity-20"}`}>
+              <div className={`rounded-xl p-2.5 ${isActive ? "bg-indigo-500/20 border border-indigo-500/30" : "bg-zinc-800"}`}>
+                {isActive ? (
+                  <Loader2 className="h-5 w-5 text-indigo-400 animate-spin" />
+                ) : (
+                  <Icon className="h-5 w-5 text-zinc-500" />
+                )}
               </div>
-            )}
-            {isDone && <span className="ml-auto text-emerald-500 text-xs">✓</span>}
-          </div>
-        );
-      })}
+              <div>
+                <p className={`text-sm font-medium ${isActive ? "text-white" : "text-zinc-500"}`}>{s.label}</p>
+                {isActive && <p className="text-xs text-zinc-500 mt-0.5">{s.desc}</p>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

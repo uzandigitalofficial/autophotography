@@ -1,32 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Coins } from "lucide-react";
+import { Zap } from "lucide-react";
 
-export function CreditsBadge() {
-  const [credits, setCredits] = useState<number | null>(null);
-  const [plan, setPlan] = useState<string>("FREE");
+interface CreditsBadgeProps {
+  credits: number;
+}
 
-  useEffect(() => {
-    fetch("/api/user")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.credits !== undefined) setCredits(data.credits);
-        if (data.plan) setPlan(data.plan);
-      })
-      .catch(() => {});
-  }, []);
-
+export function CreditsBadge({ credits }: CreditsBadgeProps) {
   return (
-    <div className="flex items-center gap-2 rounded-lg bg-zinc-900 border border-zinc-800 px-3 py-2">
-      <Coins className="h-3.5 w-3.5 text-amber-400" />
-      <div className="flex-1 min-w-0">
-        <div className="text-xs font-semibold text-white">
-          {credits === null ? "—" : credits === 999999 ? "∞" : credits}{" "}
-          credit{credits !== 1 ? "s" : ""}
-        </div>
-        <div className="text-[10px] text-zinc-500 uppercase tracking-wide">{plan} plan</div>
-      </div>
+    <div className="flex items-center gap-1.5 rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1 text-sm">
+      <Zap className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400" />
+      <span className="font-semibold text-white">{credits}</span>
+      <span className="text-zinc-500">credits</span>
     </div>
   );
 }

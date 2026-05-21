@@ -1,157 +1,85 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Loader2, AlertCircle } from "lucide-react";
-import { StylePreset } from "@prisma/client";
-import { PresetSelector } from "./PresetSelector";
-import { toast } from "sonner";
+import { Loader2, Sparkles } from "lucide-react";
 
-interface PromptInputProps {
-  onResult: (imageUrl: string, generationId: string, cached: boolean, rawPrompt: string) => void;
-  onGenerating: (step: "prompt" | "generating" | "uploading" | null) => void;
-  credits: number;
-  onCreditsUpdate: () => void;
-}
-
-const EXAMPLE_PROMPTS = [
-  "BMW M4 Competition rainy night Tokyo street, cinematic",
-  "Ferrari 488 Pista desert sunset, hero shot",
-  "Porsche 911 GT3 RS Nürburgring tunnel motion blur",
-  "Lamborghini Huracán golden hour coastal road",
-  "Mercedes AMG G63 off-road mud documentary",
+const STYLE_PRESETS = [
+  { id: "RAIN_NEON_CINEMATIC", name: "Rain Neon", emoji: "???" },
+  { id: "DESERT_HERO_SHOT", name: "Desert Hero", emoji: "???" },
+  { id: "LUXURY_STUDIO_LIGHTBOX", name: "Studio", emoji: "??" },
+  { id: "OFFROAD_DOCUMENTARY", name: "Offroad", emoji: "??" },
+  { id: "TUNNEL_MOTION_BLUR", name: "Tunnel", emoji: "?" },
+  { id: "GOLDEN_HOUR_SHOWCASE", name: "Golden Hour", emoji: "??" },
+  { id: "INDUSTRIAL_URBAN_RAW", name: "Industrial", emoji: "??" },
+  { id: "DEALERSHIP_CLEAN_LISTING", name: "Clean Listing", emoji: "??" },
 ];
 
-export function PromptInput({ onResult, onGenerating, credits, onCreditsUpdate }: PromptInputProps) {
+interface PromptInputProps {
+  onGenerate: (prompt: string, preset?: string) => Promise<void>;
+  isLoading: boolean;
+  credits: number;
+}
+
+export function PromptInput({ onGenerate, isLoading, credits }: PromptInputProps) {
   const [prompt, setPrompt] = useState("");
-  const [preset, setPreset] = useState<StylePreset | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [selectedPreset, setSelectedPreset] = useState<string | undefined>(undefined);
 
-  async function handleGenerate() {
-    if (!prompt.trim() || loading) return;
-    if (credits < 1) {
-      toast.error("No credits remaining", { description: "Purchase credits to continue." });
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    onGenerating("prompt");
-
-    try {
-      // Simulate step progression for UX
-      const promptTimer = setTimeout(() => onGenerating("generating"), 3000);
-      const genTimer = setTimeout(() => onGenerating("uploading"), 25000);
-
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: prompt.trim(), preset }),
-      });
-
-      clearTimeout(promptTimer);
-      clearTimeout(genTimer);
-      onGenerating(null);
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        if (data.code === "NO_CREDITS") {
-          toast.error("No credits remaining", { description: "Add more credits to generate." });
-        } else {
-          const msg = data.error ?? "Generation failed";
-          setError(msg);
-          toast.error("Generation failed", { description: msg });
-        }
-        return;
-      }
-
-      onCreditsUpdate();
-      onResult(data.imageUrl, data.generationId, !!data.cached, prompt.trim());
-
-      if (data.cached) {
-        toast.success("Loaded from cache", { description: "Identical prompt found — no credit used." });
-      } else {
-        toast.success("Image generated!");
-      }
-    } catch (err) {
-      onGenerating(null);
-      const msg = "Network error — please try again.";
-      setError(msg);
-      toast.error(msg);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function useExample() {
-    const random = EXAMPLE_PROMPTS[Math.floor(Math.random() * EXAMPLE_PROMPTS.length)];
-    setPrompt(random);
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!prompt.trim() || isLoading || credits < 1) return;
+    await onGenerate(prompt.trim(), selectedPreset);
+    setPrompt("");
   }
 
   return (
-    <div className="space-y-4">
-      {/* Prompt textarea */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-zinc-300">Prompt</label>
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-zinc-300 mb-2">Describe your car shot</label>
+          <textarea
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder='e.g. "BMW M4 Competition wet Tokyo street at night, neon reflections"'
+            rows={3}
+            className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none transition-all"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-zinc-300 mb-2">Style preset <span className="text-zinc-600">(optional � AI will auto-detect)</span></label>
+          <div className="flex flex-wrap gap-2">
+            {STYLE_PRESETS.map((preset) => (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() => setSelectedPreset(selectedPreset === preset.id ? undefined : preset.id)}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all ${
+                  selectedPreset === preset.id
+                    ? "border-indigo-500 bg-indigo-500/20 text-indigo-300"
+                    : "border-zinc-700 bg-zinc-800 text-zinc-400 hover:border-zinc-600"
+                }`}
+              >
+                {preset.emoji} {preset.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between pt-2">
+          <p className="text-xs text-zinc-600">1 credit per generation � {credits} remaining</p>
           <button
-            onClick={useExample}
-            className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+            type="submit"
+            disabled={!prompt.trim() || isLoading || credits < 1}
+            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Use example
+            {isLoading ? (
+              <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</>
+            ) : (
+              <><Sparkles className="h-4 w-4" /> Generate</>
+            )}
           </button>
         </div>
-        <textarea
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate();
-          }}
-          placeholder={'Try: "BMW M4 Competition rainy night Tokyo" or "Ferrari desert golden hour"'}
-          maxLength={300}
-          rows={3}
-          className="w-full resize-none rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 transition-colors"
-        />
-        <div className="flex justify-between text-[11px] text-zinc-600">
-          <span>{credits} credit{credits !== 1 ? "s" : ""} remaining</span>
-          <span>{prompt.length}/300</span>
-        </div>
-      </div>
-
-      {/* Preset selector */}
-      <PresetSelector selected={preset} onSelect={setPreset} />
-
-      {/* Error */}
-      {error && (
-        <div className="flex items-center gap-2 rounded-lg bg-red-900/20 border border-red-500/20 px-3 py-2 text-xs text-red-400">
-          <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-          {error}
-        </div>
-      )}
-
-      {/* Generate button */}
-      <button
-        onClick={handleGenerate}
-        disabled={!prompt.trim() || loading || credits < 1}
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3.5 text-sm font-semibold text-white transition-all hover:bg-indigo-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 shadow-lg shadow-indigo-500/20"
-      >
-        {loading ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Generating…
-          </>
-        ) : (
-          <>
-            <Sparkles className="h-4 w-4" />
-            Generate — 1 credit
-          </>
-        )}
-      </button>
-
-      <p className="text-center text-[11px] text-zinc-600">
-        ⌘ + Enter to generate · Credits refunded on failure
-      </p>
+      </form>
     </div>
   );
 }
