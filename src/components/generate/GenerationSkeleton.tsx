@@ -22,9 +22,24 @@ interface PromptEngineStatusProps {
 
 export function PromptEngineStatus({ stage }: PromptEngineStatusProps) {
   const stages = [
-    { id: "prompt", icon: Brain, label: "Engineering your prompt", desc: "Car Visual Director AI is structuring your brief" },
-    { id: "generating", icon: Camera, label: "Generating image", desc: "FLUX.1 is rendering your cinematic shot" },
-    { id: "uploading", icon: Sparkles, label: "Finalising", desc: "Saving to your gallery" },
+    {
+      id: "prompt",
+      icon: Brain,
+      label: "Engineering your prompt",
+      desc: "Car Visual Director AI is structuring your brief",
+    },
+    {
+      id: "generating",
+      icon: Camera,
+      label: "Generating image",
+      desc: "AI is rendering your cinematic shot",
+    },
+    {
+      id: "uploading",
+      icon: Sparkles,
+      label: "Finalising",
+      desc: "Saving to your gallery",
+    },
   ];
 
   const currentIndex = stages.findIndex((s) => s.id === stage);
@@ -37,8 +52,19 @@ export function PromptEngineStatus({ stage }: PromptEngineStatusProps) {
           const isActive = i === currentIndex;
           const isDone = i < currentIndex;
           return (
-            <div key={s.id} className={`flex items-start gap-4 transition-all ${isActive ? "opacity-100" : isDone ? "opacity-40" : "opacity-20"}`}>
-              <div className={`rounded-xl p-2.5 ${isActive ? "bg-indigo-500/20 border border-indigo-500/30" : "bg-zinc-800"}`}>
+            <div
+              key={s.id}
+              className={`flex items-start gap-4 transition-all ${
+                isActive ? "opacity-100" : isDone ? "opacity-40" : "opacity-20"
+              }`}
+            >
+              <div
+                className={`rounded-xl p-2.5 ${
+                  isActive
+                    ? "bg-indigo-500/20 border border-indigo-500/30"
+                    : "bg-zinc-800"
+                }`}
+              >
                 {isActive ? (
                   <Loader2 className="h-5 w-5 text-indigo-400 animate-spin" />
                 ) : (
@@ -46,8 +72,16 @@ export function PromptEngineStatus({ stage }: PromptEngineStatusProps) {
                 )}
               </div>
               <div>
-                <p className={`text-sm font-medium ${isActive ? "text-white" : "text-zinc-500"}`}>{s.label}</p>
-                {isActive && <p className="text-xs text-zinc-500 mt-0.5">{s.desc}</p>}
+                <p
+                  className={`text-sm font-medium ${
+                    isActive ? "text-white" : "text-zinc-500"
+                  }`}
+                >
+                  {s.label}
+                </p>
+                {isActive && (
+                  <p className="text-xs text-zinc-500 mt-0.5">{s.desc}</p>
+                )}
               </div>
             </div>
           );

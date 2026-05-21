@@ -6,7 +6,7 @@ import { ChevronRight } from "lucide-react";
 
 const DEMO_PROMPTS = [
   "BMW M4 Competition wet Tokyo street at night, neon reflections",
-  "Lamborghini Huracán desert dunes at sunset, golden hour",
+  "Lamborghini Huracan desert dunes at sunset, golden hour",
   "Porsche 911 GT3 RS studio white background, perfect lighting",
   "Range Rover Sport muddy mountain trail, overcast sky",
   "Ferrari SF90 underground tunnel motion blur, red speed",
@@ -46,7 +46,7 @@ export function HeroPromptDemo() {
         </button>
       </div>
       <p className="mt-3 text-xs text-zinc-600 text-center">
-        3 free credits on signup · No credit card required
+        3 free credits on signup - No credit card required
       </p>
     </form>
   );

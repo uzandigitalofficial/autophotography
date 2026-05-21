@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Download, Share2, Sparkles } from "lucide-react";
+import { Download, Share2 } from "lucide-react";
 
 interface GenerationResultProps {
   imageUrl: string;

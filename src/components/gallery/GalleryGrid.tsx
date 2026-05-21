@@ -23,9 +23,11 @@ export function GalleryGrid({ generations }: GalleryGridProps) {
   if (generations.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
-        <div className="text-5xl mb-4">??</div>
-        <h3 className="text-lg font-semibold mb-2">No generations yet</h3>
-        <p className="text-zinc-500 text-sm">Head to the dashboard and generate your first car image.</p>
+        <div className="text-5xl mb-4">No generations yet</div>
+        <h3 className="text-lg font-semibold mb-2">Your gallery is empty</h3>
+        <p className="text-zinc-500 text-sm">
+          Head to the dashboard and generate your first car image.
+        </p>
       </div>
     );
   }
@@ -47,7 +49,9 @@ export function GalleryGrid({ generations }: GalleryGridProps) {
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-zinc-600 text-xs">No image</div>
+              <div className="absolute inset-0 flex items-center justify-center text-zinc-600 text-xs">
+                No image
+              </div>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-end">
               <p className="text-xs text-white line-clamp-2">{gen.rawPrompt}</p>
@@ -57,11 +61,22 @@ export function GalleryGrid({ generations }: GalleryGridProps) {
       </div>
 
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setSelected(null)}>
-          <div className="relative max-w-3xl w-full rounded-2xl border border-zinc-800 bg-zinc-900 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={() => setSelected(null)}
+        >
+          <div
+            className="relative max-w-3xl w-full rounded-2xl border border-zinc-800 bg-zinc-900 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
             {selected.imageUrl && (
               <div className="relative aspect-video">
-                <Image src={selected.imageUrl} alt={selected.rawPrompt} fill className="object-cover" />
+                <Image
+                  src={selected.imageUrl}
+                  alt={selected.rawPrompt}
+                  fill
+                  className="object-cover"
+                />
               </div>
             )}
             <div className="p-5">
