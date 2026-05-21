@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback } from "react";
 import { PromptInput } from "@/components/generate/PromptInput";
 import { GenerationResult } from "@/components/generate/GenerationResult";
 import { GenerationSkeleton, PromptEngineStatus } from "@/components/generate/GenerationSkeleton";
-import { Sparkles } from "lucide-react";
 
 type GenerationStep = "prompt" | "generating" | "uploading" | null;
 
@@ -40,11 +39,11 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">
-          <Sparkles className="h-5 w-5 text-indigo-400" />
-          <h1 className="text-xl font-bold text-white">Generate</h1>
+          <span className="material-symbols-outlined text-[#E8002D]" style={{ fontSize: 22 }}>auto_awesome</span>
+          <h1 className="text-xl font-bold text-black">Generate</h1>
         </div>
-        <p className="text-sm text-zinc-500">
-          Type a car prompt and our AI prompt engine will build the cinematic brief.
+        <p className="text-sm text-gray-500">
+          Type a car prompt and our AI photography engine will build the cinematic brief.
         </p>
       </div>
 
@@ -80,18 +79,18 @@ export default function DashboardPage() {
           )}
 
           {!isGenerating && !result && (
-            <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/40 text-center">
-              <div className="text-4xl mb-3">📸</div>
-              <p className="text-sm text-zinc-500">Your generated image will appear here</p>
-              <p className="text-xs text-zinc-700 mt-1">First time? Try an example prompt</p>
+            <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-[#E5E7EB] bg-[#F3F4F6]/40 text-center">
+              <span className="material-symbols-outlined text-gray-300 mb-3" style={{ fontSize: 40 }}>photo_camera</span>
+              <p className="text-sm text-gray-500">Your generated image will appear here</p>
+              <p className="text-xs text-gray-400 mt-1">First time? Try an example prompt</p>
             </div>
           )}
         </div>
       </div>
 
       {/* Tip */}
-      <div className="mt-10 rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
-        <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Prompt tips</h3>
+      <div className="mt-10 rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] p-4">
+        <h3 className="text-xs font-semibold text-[#003087] uppercase tracking-wider mb-2">Prompt tips</h3>
         <div className="grid sm:grid-cols-3 gap-3">
           {[
             { tip: "Name the car", example: '"BMW M4 Competition" not "sports car"' },
@@ -99,8 +98,8 @@ export default function DashboardPage() {
             { tip: "Pick a preset", example: "Or let AI auto-detect from your description" },
           ].map(({ tip, example }) => (
             <div key={tip} className="text-xs">
-              <div className="font-medium text-zinc-300 mb-0.5">{tip}</div>
-              <div className="text-zinc-600">{example}</div>
+              <div className="font-medium text-black mb-0.5">{tip}</div>
+              <div className="text-gray-500">{example}</div>
             </div>
           ))}
         </div>

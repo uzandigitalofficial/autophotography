@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
-import { Camera, Zap, Shield, ChevronRight, Star } from "lucide-react";
 import { HeroPromptDemo } from "@/components/landing/HeroPromptDemo";
 
 const PRESETS = [
@@ -16,19 +15,37 @@ const PRESETS = [
 
 const STEPS = [
   {
-    icon: "✏️",
+    icon: "edit",
     title: "Type your prompt",
     desc: 'e.g. "BMW M4 Competition rainy night Tokyo street"',
   },
   {
-    icon: "🧠",
-    title: "AI engineering pipeline",
-    desc: "Our Claude-powered director converts your prompt into a precise cinematic brief",
+    icon: "psychology",
+    title: "AI photography director",
+    desc: "Our AI photography director analyses your prompt and builds a precise cinematic brief",
   },
   {
-    icon: "📸",
+    icon: "photo_camera",
     title: "Cinematic result",
-    desc: "FLUX.1 generates photorealistic automotive photography in seconds",
+    desc: "Our cinematic image engine renders photorealistic automotive photography in seconds",
+  },
+];
+
+const FEATURES = [
+  {
+    icon: "bolt",
+    title: "Prompt Engineering Layer",
+    desc: "Every prompt passes through our Car Visual Director AI. It enforces car identity, camera specs, and cinematic lighting — no hallucinated body kits.",
+  },
+  {
+    icon: "photo_camera",
+    title: "Cinematic Image Engine",
+    desc: "We use the highest-fidelity photorealism engine available. Output at 1344x768 cinematic 16:9 with 90% WebP quality.",
+  },
+  {
+    icon: "cache",
+    title: "24-hour smart cache",
+    desc: "Identical prompts within 24 hours return cached results instantly — no credit used. Your images are stored permanently on CDN so they never expire.",
   },
 ];
 
@@ -43,72 +60,112 @@ export default async function LandingPage() {
   const isSignedIn = !!userId;
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white overflow-x-hidden">
+    <div className="min-h-screen bg-white text-black overflow-x-hidden">
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-xl">
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[#E5E7EB] bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
-            <Camera className="h-6 w-6 text-indigo-400" />
-            <span className="font-bold text-lg">AutoPhotography</span>
+            <span className="material-symbols-outlined text-[#E8002D]" style={{ fontSize: 24 }}>photo_camera</span>
+            <span className="font-bold text-lg text-black">AutoPhotography</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/pricing" className="text-zinc-400 hover:text-white text-sm transition-colors">
+            <Link href="/pricing" className="text-gray-600 hover:text-black text-sm transition-colors">
               Pricing
             </Link>
             {isSignedIn ? (
-              <Link href="/dashboard" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition-colors">Dashboard</Link>
+              <Link href="/dashboard" className="rounded-lg bg-[#E8002D] px-4 py-2 text-sm font-medium text-white hover:bg-[#C5001F] transition-colors">Dashboard</Link>
             ) : (
               <>
-                <Link href="/sign-in" className="text-zinc-400 hover:text-white text-sm transition-colors">Sign in</Link>
-                <Link href="/sign-up" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition-colors">Get started free</Link>
+                <Link href="/sign-in" className="text-[#003087] font-medium text-sm transition-colors hover:text-[#002070]">Sign in</Link>
+                <Link href="/sign-up" className="rounded-lg bg-[#E8002D] px-4 py-2 text-sm font-medium text-white hover:bg-[#C5001F] transition-colors">Get started free</Link>
               </>
             )}
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "linear-gradient(rgba(99,102,241,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.15) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-indigo-600/10 blur-3xl pointer-events-none" />
-        <div className="relative mx-auto max-w-5xl px-4 sm:px-6 text-center py-20">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-sm text-indigo-300 mb-8">
-            <Star className="h-3.5 w-3.5 fill-current" />
-            Powered by FLUX.1 + Claude AI
-          </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-none mb-6">
-            Cinematic car photos,
-            <br />
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">generated instantly</span>
-          </h1>
-          <p className="text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Type a simple prompt. Our AI prompt engine transforms it into a precise cinematic photography brief — then FLUX.1 renders studio-quality automotive imagery in seconds.
-          </p>
-          <HeroPromptDemo />
-          <div className="flex items-center justify-center gap-8 text-sm text-zinc-500">
-            <div className="text-center"><div className="text-2xl font-bold text-white">8</div><div>Style presets</div></div>
-            <div className="w-px h-8 bg-zinc-800" />
-            <div className="text-center"><div className="text-2xl font-bold text-white">~30s</div><div>Generation time</div></div>
-            <div className="w-px h-8 bg-zinc-800" />
-            <div className="text-center"><div className="text-2xl font-bold text-white">8K</div><div>Output quality</div></div>
+      {/* Hero — dark background, rule-of-thirds layout */}
+      <section className="relative min-h-screen bg-black text-white flex items-center pt-16 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(232,0,45,0.12),transparent_60%),radial-gradient(ellipse_at_70%_50%,rgba(0,48,135,0.10),transparent_60%)]" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full py-20">
+          <div className="grid grid-cols-3 gap-8 min-h-[60vh] items-center">
+            {/* Left third — main content */}
+            <div className="col-span-1 flex flex-col justify-center">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#E8002D]/30 bg-[#E8002D]/10 px-4 py-1.5 text-sm text-[#ff6680] mb-8 w-fit">
+                <span className="material-symbols-outlined text-[14px]">verified</span>
+                Professional automotive photography
+              </div>
+              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-black tracking-tight leading-tight mb-6">
+                Cinematic car photos,
+                <br />
+                <span className="text-[#E8002D]">generated</span>
+                <br />
+                <span className="text-white">instantly</span>
+              </h1>
+              <p className="text-base text-gray-400 mb-8 leading-relaxed">
+                Type a simple prompt. Our AI photography engine transforms it into a cinematic brief and renders studio-quality automotive imagery in seconds.
+              </p>
+              <div className="flex flex-col gap-3">
+                <Link
+                  href="/sign-up"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#E8002D] px-6 py-3.5 text-sm font-semibold text-white hover:bg-[#C5001F] transition-colors w-full"
+                >
+                  Get started free
+                  <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                </Link>
+                <Link
+                  href="/pricing"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-6 py-3.5 text-sm font-medium text-white hover:bg-white/5 transition-colors w-full"
+                >
+                  View pricing
+                </Link>
+              </div>
+              <p className="mt-4 text-xs text-gray-600 text-center">3 free credits on signup. No credit card required.</p>
+            </div>
+
+            {/* Center third — intentionally empty (rule of thirds) */}
+            <div className="col-span-1" />
+
+            {/* Right third — stats + demo */}
+            <div className="col-span-1 flex flex-col justify-center gap-6">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+                <HeroPromptDemo />
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center rounded-xl border border-white/10 bg-white/5 p-4">
+                  <div className="text-2xl font-black text-white">8</div>
+                  <div className="text-xs text-gray-500 mt-1">Presets</div>
+                </div>
+                <div className="text-center rounded-xl border border-white/10 bg-white/5 p-4">
+                  <div className="text-2xl font-black text-white">~30s</div>
+                  <div className="text-xs text-gray-500 mt-1">Generation</div>
+                </div>
+                <div className="text-center rounded-xl border border-white/10 bg-white/5 p-4">
+                  <div className="text-2xl font-black text-white">8K</div>
+                  <div className="text-xs text-gray-500 mt-1">Quality</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* How it works */}
-      <section className="py-24 border-t border-zinc-800">
+      <section className="py-24 bg-white border-t border-[#E5E7EB]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">How it works</h2>
-            <p className="text-zinc-400 max-w-xl mx-auto">Unlike generic image generators, AutoPhotography has a dedicated prompt engineering layer that understands automotive photography.</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-black mb-4">How it works</h2>
+            <p className="text-[#374151] max-w-xl mx-auto">Unlike generic image generators, AutoPhotography has a dedicated prompt engineering layer that understands automotive photography.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {STEPS.map((step, i) => (
-              <div key={i} className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8">
-                <div className="text-4xl mb-4">{step.icon}</div>
-                <div className="text-xs font-semibold text-indigo-400 uppercase tracking-widest mb-2">Step {i + 1}</div>
-                <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">{step.desc}</p>
+              <div key={i} className="rounded-2xl border border-[#E5E7EB] bg-[#F3F4F6] p-8">
+                <div className="w-10 h-10 rounded-xl bg-[#E8002D]/10 flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined text-[#E8002D]">{step.icon}</span>
+                </div>
+                <div className="text-xs font-semibold text-[#E8002D] uppercase tracking-widest mb-2">Step {i + 1}</div>
+                <h3 className="text-lg font-semibold text-black mb-2">{step.title}</h3>
+                <p className="text-[#374151] text-sm leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -116,18 +173,18 @@ export default async function LandingPage() {
       </section>
 
       {/* Style presets */}
-      <section className="py-24 border-t border-zinc-800">
+      <section className="py-24 bg-white border-t border-[#E5E7EB]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">8 cinematic presets</h2>
-            <p className="text-zinc-400 max-w-xl mx-auto">Each preset encodes a complete visual language — lighting, camera, environment, and mood.</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-black mb-4">8 cinematic presets</h2>
+            <p className="text-[#374151] max-w-xl mx-auto">Each preset encodes a complete visual language — lighting, camera, environment, and mood.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {PRESETS.map((preset) => (
-              <div key={preset.id} className="group rounded-xl border border-zinc-800 bg-zinc-900 p-5 hover:border-indigo-500/50 hover:bg-zinc-800/80 transition-all">
+              <div key={preset.id} className="group rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] p-5 hover:border-[#E8002D]/50 hover:bg-white transition-all cursor-default">
                 <div className="text-3xl mb-3">{preset.emoji}</div>
-                <h3 className="font-semibold text-sm mb-1">{preset.name}</h3>
-                <p className="text-zinc-500 text-xs">{preset.desc}</p>
+                <h3 className="font-semibold text-sm text-black mb-1">{preset.name}</h3>
+                <p className="text-gray-500 text-xs">{preset.desc}</p>
               </div>
             ))}
           </div>
@@ -135,38 +192,45 @@ export default async function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-24 border-t border-zinc-800">
+      <section className="py-24 bg-[#F3F4F6] border-t border-[#E5E7EB]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-black mb-4">Built for automotive photography</h2>
+            <p className="text-[#374151] max-w-xl mx-auto">Every detail engineered to produce professional-grade automotive imagery.</p>
+          </div>
           <div className="grid lg:grid-cols-3 gap-8">
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-4"><Zap className="h-5 w-5 text-indigo-400" /></div>
-              <h3 className="text-lg font-semibold mb-2">Prompt Engineering Layer</h3>
-              <p className="text-zinc-400 text-sm leading-relaxed">Every prompt passes through our Claude-powered Car Visual Director AI. It enforces car identity, camera specs, and cinematic lighting — no hallucinated body kits.</p>
-            </div>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4"><Camera className="h-5 w-5 text-purple-400" /></div>
-              <h3 className="text-lg font-semibold mb-2">FLUX.1 Image Engine</h3>
-              <p className="text-zinc-400 text-sm leading-relaxed">We use the FLUX.1 dev model — the highest-fidelity open model for photorealism. Output at 1344×768 cinematic 16:9 with 90% WebP quality.</p>
-            </div>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4"><Shield className="h-5 w-5 text-emerald-400" /></div>
-              <h3 className="text-lg font-semibold mb-2">24-hour smart cache</h3>
-              <p className="text-zinc-400 text-sm leading-relaxed">Identical prompts within 24 hours return cached results instantly — no credit used. Your images are stored permanently on CDN so they never expire.</p>
-            </div>
+            {FEATURES.map((f, i) => (
+              <div key={i} className="rounded-2xl border border-[#E5E7EB] bg-white p-8">
+                <div className="w-10 h-10 rounded-xl bg-[#E8002D]/10 flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined text-[#E8002D]">{f.icon}</span>
+                </div>
+                <h3 className="text-lg font-semibold text-black mb-2">{f.title}</h3>
+                <p className="text-[#374151] text-sm leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 border-t border-zinc-800">
+      <section className="py-24 bg-white border-t border-[#E5E7EB]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16"><h2 className="text-3xl sm:text-4xl font-bold mb-4">Trusted by car people</h2></div>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-black mb-4">Trusted by car people</h2>
+          </div>
           <div className="grid md:grid-cols-3 gap-6">
             {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-                <div className="flex gap-0.5 mb-4">{Array.from({ length: 5 }).map((_, j) => (<Star key={j} className="h-4 w-4 fill-yellow-400 text-yellow-400" />))}</div>
-                <p className="text-zinc-300 text-sm leading-relaxed mb-4">"{t.text}"</p>
-                <div><div className="font-semibold text-sm">{t.name}</div><div className="text-zinc-500 text-xs">{t.role}</div></div>
+              <div key={i} className="rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                <div className="flex gap-0.5 mb-4">
+                  {Array.from({ length: 5 }).map((_, j) => (
+                    <span key={j} className="material-symbols-outlined text-yellow-400" style={{ fontSize: 16, fontVariationSettings: "'FILL' 1" }}>star</span>
+                  ))}
+                </div>
+                <p className="text-[#374151] text-sm leading-relaxed mb-4">"{t.text}"</p>
+                <div>
+                  <div className="font-semibold text-sm text-black">{t.name}</div>
+                  <div className="text-gray-500 text-xs">{t.role}</div>
+                </div>
               </div>
             ))}
           </div>
@@ -174,27 +238,33 @@ export default async function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 border-t border-zinc-800">
+      <section className="py-24 bg-[#003087]">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
-          <h2 className="text-4xl sm:text-5xl font-black mb-6">Start generating today</h2>
-          <p className="text-zinc-400 text-lg mb-10 max-w-xl mx-auto">3 free credits on signup. No credit card required.</p>
-          <Link href="/sign-up" className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-4 text-base font-semibold text-white hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-500/20">
-            Get started — it's free <ChevronRight className="h-5 w-5" />
+          <h2 className="text-4xl sm:text-5xl font-black text-white mb-6">Start generating today</h2>
+          <p className="text-blue-200 text-lg mb-10 max-w-xl mx-auto">3 free credits on signup. No credit card required.</p>
+          <Link
+            href="/sign-up"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#E8002D] px-8 py-4 text-base font-semibold text-white hover:bg-[#C5001F] transition-colors shadow-lg"
+          >
+            Get started — it is free
+            <span className="material-symbols-outlined text-[20px]">chevron_right</span>
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-800 py-8">
+      <footer className="border-t border-[#E5E7EB] bg-white py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-sm"><Camera className="h-4 w-4" />AutoPhotography © {new Date().getFullYear()}</div>
-          <div className="flex gap-6 text-zinc-500 text-sm">
-            <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
-            <Link href="/sign-in" className="hover:text-white transition-colors">Sign in</Link>
+          <div className="flex items-center gap-2 text-gray-500 text-sm">
+            <span className="material-symbols-outlined text-[#E8002D]" style={{ fontSize: 16 }}>photo_camera</span>
+            AutoPhotography &copy; {new Date().getFullYear()}
+          </div>
+          <div className="flex gap-6 text-gray-500 text-sm">
+            <Link href="/pricing" className="hover:text-black transition-colors">Pricing</Link>
+            <Link href="/sign-in" className="hover:text-black transition-colors">Sign in</Link>
           </div>
         </div>
       </footer>
     </div>
   );
 }
-

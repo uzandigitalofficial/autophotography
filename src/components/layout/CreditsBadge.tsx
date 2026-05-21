@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Zap } from "lucide-react";
 
 export function CreditsBadge() {
   const [credits, setCredits] = useState<number | null>(null);
@@ -16,12 +15,12 @@ export function CreditsBadge() {
   }, []);
 
   return (
-    <div className="flex items-center gap-1.5 rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1 text-sm w-fit">
-      <Zap className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400" />
-      <span className="font-semibold text-white">
+    <div className="flex items-center gap-1.5 rounded-full border border-[#E5E7EB] bg-[#F3F4F6] px-3 py-1 text-sm w-fit">
+      <span className="material-symbols-outlined text-[#E8002D]" style={{ fontSize: 14, fontVariationSettings: "'FILL' 1" }}>bolt</span>
+      <span className="font-semibold text-black">
         {credits === null ? "..." : credits}
       </span>
-      <span className="text-zinc-500">credits</span>
+      <span className="text-gray-500">credits</span>
     </div>
   );
 }

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Download, Calendar } from "lucide-react";
 import { format } from "date-fns";
 
 interface Generation {
@@ -23,9 +22,9 @@ export function GalleryGrid({ generations }: GalleryGridProps) {
   if (generations.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
-        <div className="text-5xl mb-4">No generations yet</div>
-        <h3 className="text-lg font-semibold mb-2">Your gallery is empty</h3>
-        <p className="text-zinc-500 text-sm">
+        <span className="material-symbols-outlined text-gray-300 mb-4" style={{ fontSize: 48 }}>collections</span>
+        <h3 className="text-lg font-semibold text-black mb-2">Your gallery is empty</h3>
+        <p className="text-gray-500 text-sm">
           Head to the dashboard and generate your first car image.
         </p>
       </div>
@@ -39,7 +38,7 @@ export function GalleryGrid({ generations }: GalleryGridProps) {
           <button
             key={gen.id}
             onClick={() => setSelected(gen)}
-            className="group relative aspect-video rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900 hover:border-indigo-500/50 transition-all"
+            className="group relative aspect-video rounded-xl overflow-hidden border border-[#E5E7EB] bg-[#F3F4F6] hover:border-[#E8002D]/40 transition-all"
           >
             {gen.imageUrl ? (
               <Image
@@ -49,11 +48,11 @@ export function GalleryGrid({ generations }: GalleryGridProps) {
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-zinc-600 text-xs">
+              <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-xs">
                 No image
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-end">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-end">
               <p className="text-xs text-white line-clamp-2">{gen.rawPrompt}</p>
             </div>
           </button>
@@ -62,11 +61,11 @@ export function GalleryGrid({ generations }: GalleryGridProps) {
 
       {selected && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
           onClick={() => setSelected(null)}
         >
           <div
-            className="relative max-w-3xl w-full rounded-2xl border border-zinc-800 bg-zinc-900 overflow-hidden"
+            className="relative max-w-3xl w-full rounded-2xl border border-[#E5E7EB] bg-white overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {selected.imageUrl && (
@@ -80,10 +79,10 @@ export function GalleryGrid({ generations }: GalleryGridProps) {
               </div>
             )}
             <div className="p-5">
-              <p className="text-sm text-zinc-300 mb-3">{selected.rawPrompt}</p>
+              <p className="text-sm text-gray-700 mb-3">{selected.rawPrompt}</p>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs text-zinc-500">
-                  <Calendar className="h-3.5 w-3.5" />
+                <div className="flex items-center gap-2 text-xs text-gray-400">
+                  <span className="material-symbols-outlined" style={{ fontSize: 14 }}>calendar_today</span>
                   {format(new Date(selected.createdAt), "MMM d, yyyy")}
                 </div>
                 {selected.imageUrl && (
@@ -92,9 +91,10 @@ export function GalleryGrid({ generations }: GalleryGridProps) {
                     download
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-[#E8002D] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#C5001F] transition-colors"
                   >
-                    <Download className="h-3.5 w-3.5" /> Download
+                    <span className="material-symbols-outlined" style={{ fontSize: 14 }}>download</span>
+                    Download
                   </a>
                 )}
               </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const STYLE_PRESETS = [
   { id: "RAIN_NEON_CINEMATIC", name: "Rain Neon" },
@@ -62,10 +62,10 @@ export function PromptInput({ credits, onResult, onGenerating, onCreditsUpdate }
   }
 
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-2">
+          <label className="block text-sm font-medium text-black mb-2">
             Describe your car shot
           </label>
           <textarea
@@ -73,12 +73,12 @@ export function PromptInput({ credits, onResult, onGenerating, onCreditsUpdate }
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="e.g. BMW M4 Competition wet Tokyo street at night, neon reflections"
             rows={3}
-            className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none transition-all"
+            className="w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-black placeholder:text-gray-400 focus:border-[#E8002D] focus:outline-none focus:ring-2 focus:ring-[#E8002D]/20 resize-none transition-all"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-2">
-            Style preset <span className="text-zinc-600">(optional - AI auto-detects)</span>
+          <label className="block text-sm font-medium text-black mb-2">
+            Style preset <span className="text-gray-400">(optional — AI auto-detects)</span>
           </label>
           <div className="flex flex-wrap gap-2">
             {STYLE_PRESETS.map((preset) => (
@@ -90,8 +90,8 @@ export function PromptInput({ credits, onResult, onGenerating, onCreditsUpdate }
                 }
                 className={`inline-flex items-center rounded-lg border px-3 py-1.5 text-xs font-medium transition-all ${
                   selectedPreset === preset.id
-                    ? "border-indigo-500 bg-indigo-500/20 text-indigo-300"
-                    : "border-zinc-700 bg-zinc-800 text-zinc-400 hover:border-zinc-600"
+                    ? "border-[#E8002D] bg-[#E8002D]/5 text-[#E8002D]"
+                    : "border-[#E5E7EB] bg-[#F3F4F6] text-gray-600 hover:border-[#E8002D]/40"
                 }`}
               >
                 {preset.name}
@@ -100,16 +100,19 @@ export function PromptInput({ credits, onResult, onGenerating, onCreditsUpdate }
           </div>
         </div>
         <div className="flex items-center justify-between pt-2">
-          <p className="text-xs text-zinc-600">{credits} credits remaining</p>
+          <p className="text-xs text-gray-400">{credits} credits remaining</p>
           <button
             type="submit"
             disabled={!prompt.trim() || isLoading || credits < 1}
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#E8002D] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#C5001F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</>
             ) : (
-              <><Sparkles className="h-4 w-4" /> Generate</>
+              <>
+                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>auto_awesome</span>
+                Generate
+              </>
             )}
           </button>
         </div>

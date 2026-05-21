@@ -1,6 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { Images } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { GenerationStatus } from "@prisma/client";
@@ -35,10 +34,10 @@ export default async function GalleryPage() {
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">
-          <Images className="h-5 w-5 text-indigo-400" />
-          <h1 className="text-xl font-bold text-white">Gallery</h1>
+          <span className="material-symbols-outlined text-[#E8002D]" style={{ fontSize: 22 }}>collections</span>
+          <h1 className="text-xl font-bold text-black">Gallery</h1>
         </div>
-        <p className="text-sm text-zinc-500">All your generated automotive images.</p>
+        <p className="text-sm text-gray-500">All your generated automotive images.</p>
       </div>
       <GalleryGrid generations={serialized} />
     </div>

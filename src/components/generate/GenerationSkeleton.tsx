@@ -1,16 +1,16 @@
 "use client";
 
-import { Loader2, Brain, Camera, Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export function GenerationSkeleton() {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 overflow-hidden">
-      <div className="aspect-video bg-zinc-800 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 text-zinc-600 animate-spin" />
+    <div className="rounded-2xl border border-[#E5E7EB] bg-white overflow-hidden">
+      <div className="aspect-video bg-[#F3F4F6] flex items-center justify-center">
+        <Loader2 className="h-8 w-8 text-gray-300 animate-spin" />
       </div>
       <div className="p-5 space-y-3">
-        <div className="h-3 bg-zinc-700 rounded w-3/4 animate-pulse" />
-        <div className="h-3 bg-zinc-700 rounded w-1/2 animate-pulse" />
+        <div className="h-3 bg-[#E5E7EB] rounded w-3/4 animate-pulse" />
+        <div className="h-3 bg-[#E5E7EB] rounded w-1/2 animate-pulse" />
       </div>
     </div>
   );
@@ -22,20 +22,19 @@ interface PromptEngineStatusProps {
   step: GenerationStep;
 }
 
-export function PromptEngineStatus({ step }: PromptEngineStatusProps) {
-  const stages = [
-    { id: "prompt", icon: Brain, label: "Engineering your prompt", desc: "Car Visual Director AI is structuring your brief" },
-    { id: "generating", icon: Camera, label: "Generating image", desc: "AI is rendering your cinematic shot" },
-    { id: "uploading", icon: Sparkles, label: "Finalising", desc: "Saving to your gallery" },
-  ];
+const STAGES = [
+  { id: "prompt", icon: "psychology", label: "Engineering your prompt", desc: "Car Visual Director AI is structuring your brief" },
+  { id: "generating", icon: "photo_camera", label: "Generating image", desc: "Cinematic image engine is rendering your shot" },
+  { id: "uploading", icon: "auto_awesome", label: "Finalising", desc: "Saving to your gallery" },
+];
 
-  const currentIndex = stages.findIndex((s) => s.id === step);
+export function PromptEngineStatus({ step }: PromptEngineStatusProps) {
+  const currentIndex = STAGES.findIndex((s) => s.id === step);
 
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6">
       <div className="space-y-4">
-        {stages.map((s, i) => {
-          const Icon = s.icon;
+        {STAGES.map((s, i) => {
           const isActive = i === currentIndex;
           const isDone = i < currentIndex;
           return (
@@ -45,16 +44,16 @@ export function PromptEngineStatus({ step }: PromptEngineStatusProps) {
                 isActive ? "opacity-100" : isDone ? "opacity-40" : "opacity-20"
               }`}
             >
-              <div className={`rounded-xl p-2.5 ${isActive ? "bg-indigo-500/20 border border-indigo-500/30" : "bg-zinc-800"}`}>
+              <div className={`rounded-xl p-2.5 ${isActive ? "bg-[#E8002D]/5 border border-[#E8002D]/20" : "bg-[#F3F4F6]"}`}>
                 {isActive ? (
-                  <Loader2 className="h-5 w-5 text-indigo-400 animate-spin" />
+                  <Loader2 className="h-5 w-5 text-[#E8002D] animate-spin" />
                 ) : (
-                  <Icon className="h-5 w-5 text-zinc-500" />
+                  <span className="material-symbols-outlined text-gray-400" style={{ fontSize: 20 }}>{s.icon}</span>
                 )}
               </div>
               <div>
-                <p className={`text-sm font-medium ${isActive ? "text-white" : "text-zinc-500"}`}>{s.label}</p>
-                {isActive && <p className="text-xs text-zinc-500 mt-0.5">{s.desc}</p>}
+                <p className={`text-sm font-medium ${isActive ? "text-black" : "text-gray-500"}`}>{s.label}</p>
+                {isActive && <p className="text-xs text-gray-400 mt-0.5">{s.desc}</p>}
               </div>
             </div>
           );
