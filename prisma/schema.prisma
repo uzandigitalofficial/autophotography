@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                   String       @id @default(cuid())
+  clerkId              String       @unique
+  email                String       @unique
+  name                 String?
+  avatarUrl            String?
+  credits              Int          @default(3)
+  plan                 Plan         @default(FREE)
+  stripeCustomerId     String?      @unique
+  stripeSubscriptionId String?      @unique
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  generations          Generation[]
+  creditLogs           CreditLog[]
+  presets              UserPreset[]
+
+  @@index([clerkId])
+}
+
+model Generation {
+  id               String           @id @default(cuid())
+  userId           String
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rawPrompt        String
+  structuredPrompt StructuredPrompt?
+  stylePreset      StylePreset
+  carMake          String?
+  carModel         String?
+  carYear          Int?
+  imageUrl         String?
+  thumbnailUrl     String?
+  imagePath        String?
+  replicateId      String?
+  apiModel         String           @default("black-forest-labs/flux-dev")
+  promptTokens     Int?
+  status           GenerationStatus @default(PENDING)
+  errorMessage     String?
+  promptHash       String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([userId])
+  @@index([promptHash])
+  @@index([status])
+}
+
+model StructuredPrompt {
+  id             String     @id @default(cuid())
+  generationId   String     @unique
+  generation     Generation @relation(fields: [generationId], references: [id], onDelete: Cascade)
+  subjectLock    String
+  cameraSystem   String
+  lightingDesign String
+  environment    String
+  materials      String
+  cinematicStyle String
+  qualityFlags   String
+  finalPrompt    String
+  negativePrompt String     @default("cartoon, illustration, distorted proportions, wrong brand badge, CGI render, watermark, text")
+  createdAt      DateTime   @default(now())
+}
+
+model CreditLog {
+  id          String       @id @default(cuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  delta       Int
+  reason      CreditReason
+  referenceId String?
+  createdAt   DateTime     @default(now())
+
+  @@index([userId])
+}
+
+model UserPreset {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  preset      StylePreset
+  customRules Json?
+  createdAt   DateTime    @default(now())
+}
+
+enum Plan {
+  FREE
+  PRO
+  UNLIMITED
+}
+
+enum GenerationStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum StylePreset {
+  RAIN_NEON_CINEMATIC
+  DESERT_HERO_SHOT
+  LUXURY_STUDIO_LIGHTBOX
+  OFFROAD_DOCUMENTARY
+  TUNNEL_MOTION_BLUR
+  GOLDEN_HOUR_SHOWCASE
+  INDUSTRIAL_URBAN_RAW
+  DEALERSHIP_CLEAN_LISTING
+}
+
+enum CreditReason {
+  SIGNUP_BONUS
+  GENERATION_USED
+  PURCHASE
+  SUBSCRIPTION
+  REFUND
+  ADMIN
+}
