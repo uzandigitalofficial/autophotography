@@ -1,17 +1,29 @@
 import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const s3 = new S3Client({
-  region: "auto",
-  endpoint: process.env.STORAGE_ENDPOINT!,
-  credentials: {
-    accessKeyId: process.env.STORAGE_ACCESS_KEY!,
-    secretAccessKey: process.env.STORAGE_SECRET_KEY!,
-  },
-});
+// Lazy-initialize S3 client so missing env vars don't crash at module load time
+let _s3: S3Client | null = null;
+function getS3() {
+  if (!_s3) {
+    _s3 = new S3Client({
+      region: "auto",
+      endpoint: process.env.STORAGE_ENDPOINT!,
+      credentials: {
+        accessKeyId: process.env.STORAGE_ACCESS_KEY!,
+        secretAccessKey: process.env.STORAGE_SECRET_KEY!,
+      },
+    });
+  }
+  return _s3;
+}
 
-const BUCKET = process.env.STORAGE_BUCKET!;
-const PUBLIC_URL = process.env.STORAGE_PUBLIC_URL!;
+function getBucket() {
+  return process.env.STORAGE_BUCKET!;
+}
+
+function getPublicUrl() {
+  return process.env.STORAGE_PUBLIC_URL!;
+}
 
 export async function uploadImageToStorage(
   buffer: Buffer,
@@ -20,9 +32,9 @@ export async function uploadImageToStorage(
 ): Promise<{ publicUrl: string; storagePath: string }> {
   const storagePath = `generations/${filename}`;
 
-  await s3.send(
+  await getS3().send(
     new PutObjectCommand({
-      Bucket: BUCKET,
+      Bucket: getBucket(),
       Key: storagePath,
       Body: buffer,
       ContentType: contentType,
@@ -30,14 +42,14 @@ export async function uploadImageToStorage(
     })
   );
 
-  const publicUrl = `${PUBLIC_URL}/${storagePath}`;
+  const publicUrl = `${getPublicUrl()}/${storagePath}`;
   return { publicUrl, storagePath };
 }
 
 export async function getPresignedUrl(storagePath: string): Promise<string> {
   return getSignedUrl(
-    s3,
-    new GetObjectCommand({ Bucket: BUCKET, Key: storagePath }),
+    getS3(),
+    new GetObjectCommand({ Bucket: getBucket(), Key: storagePath }),
     { expiresIn: 3600 }
   );
 }
