@@ -5,21 +5,16 @@ import { Download, Share2 } from "lucide-react";
 
 interface GenerationResultProps {
   imageUrl: string;
-  prompt: string;
+  generationId: string;
+  rawPrompt: string;
   cached?: boolean;
 }
 
-export function GenerationResult({ imageUrl, prompt, cached }: GenerationResultProps) {
+export function GenerationResult({ imageUrl, rawPrompt, cached }: GenerationResultProps) {
   return (
     <div className="rounded-2xl border border-zinc-800 bg-zinc-900 overflow-hidden">
       <div className="relative aspect-video bg-zinc-950">
-        <Image
-          src={imageUrl}
-          alt={prompt}
-          fill
-          className="object-cover"
-          priority
-        />
+        <Image src={imageUrl} alt={rawPrompt} fill className="object-cover" priority />
         {cached && (
           <div className="absolute top-3 right-3 rounded-full border border-zinc-700 bg-zinc-900/80 px-2.5 py-1 text-xs text-zinc-400 backdrop-blur-sm">
             Cached result
@@ -27,7 +22,7 @@ export function GenerationResult({ imageUrl, prompt, cached }: GenerationResultP
         )}
       </div>
       <div className="p-5">
-        <p className="text-sm text-zinc-400 mb-4 line-clamp-2">{prompt}</p>
+        <p className="text-sm text-zinc-400 mb-4 line-clamp-2">{rawPrompt}</p>
         <div className="flex gap-3">
           <a
             href={imageUrl}

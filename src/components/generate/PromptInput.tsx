@@ -14,21 +14,51 @@ const STYLE_PRESETS = [
   { id: "DEALERSHIP_CLEAN_LISTING", name: "Clean Listing" },
 ];
 
+type GenerationStep = "prompt" | "generating" | "uploading" | null;
+
 interface PromptInputProps {
-  onGenerate: (prompt: string, preset?: string) => Promise<void>;
-  isLoading: boolean;
   credits: number;
+  onResult: (imageUrl: string, generationId: string, cached: boolean, rawPrompt: string) => void;
+  onGenerating: (step: GenerationStep) => void;
+  onCreditsUpdate: () => void;
 }
 
-export function PromptInput({ onGenerate, isLoading, credits }: PromptInputProps) {
+export function PromptInput({ credits, onResult, onGenerating, onCreditsUpdate }: PromptInputProps) {
   const [prompt, setPrompt] = useState("");
   const [selectedPreset, setSelectedPreset] = useState<string | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!prompt.trim() || isLoading || credits < 1) return;
-    await onGenerate(prompt.trim(), selectedPreset);
+    const rawPrompt = prompt.trim();
+    setIsLoading(true);
     setPrompt("");
+
+    try {
+      onGenerating("prompt");
+      await new Promise((r) => setTimeout(r, 600));
+      onGenerating("generating");
+
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: rawPrompt, preset: selectedPreset }),
+      });
+
+      onGenerating("uploading");
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Generation failed");
+
+      onResult(data.imageUrl, data.generationId, data.cached, rawPrompt);
+      onCreditsUpdate();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+      onGenerating(null);
+    }
   }
 
   return (
@@ -48,8 +78,7 @@ export function PromptInput({ onGenerate, isLoading, credits }: PromptInputProps
         </div>
         <div>
           <label className="block text-sm font-medium text-zinc-300 mb-2">
-            Style preset{" "}
-            <span className="text-zinc-600">(optional - AI will auto-detect)</span>
+            Style preset <span className="text-zinc-600">(optional - AI auto-detects)</span>
           </label>
           <div className="flex flex-wrap gap-2">
             {STYLE_PRESETS.map((preset) => (
@@ -57,11 +86,9 @@ export function PromptInput({ onGenerate, isLoading, credits }: PromptInputProps
                 key={preset.id}
                 type="button"
                 onClick={() =>
-                  setSelectedPreset(
-                    selectedPreset === preset.id ? undefined : preset.id
-                  )
+                  setSelectedPreset(selectedPreset === preset.id ? undefined : preset.id)
                 }
-                className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all ${
+                className={`inline-flex items-center rounded-lg border px-3 py-1.5 text-xs font-medium transition-all ${
                   selectedPreset === preset.id
                     ? "border-indigo-500 bg-indigo-500/20 text-indigo-300"
                     : "border-zinc-700 bg-zinc-800 text-zinc-400 hover:border-zinc-600"
@@ -80,13 +107,9 @@ export function PromptInput({ onGenerate, isLoading, credits }: PromptInputProps
             className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Generating...
-              </>
+              <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</>
             ) : (
-              <>
-                <Sparkles className="h-4 w-4" /> Generate
-              </>
+              <><Sparkles className="h-4 w-4" /> Generate</>
             )}
           </button>
         </div>
